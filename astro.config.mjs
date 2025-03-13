@@ -2,11 +2,9 @@ import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
-// Remove the cloudflare import since you're using Vercel now
-// import cloudflare from "@astrojs/cloudflare";
 
-// Fix the Vercel import to specify which adapter you want to use
-import vercel from "@astrojs/vercel/serverless";
+// Change from serverless to static adapter
+import vercel from "@astrojs/vercel/static";
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,6 +18,7 @@ export default defineConfig({
     }),
     tailwind(),
   ],
-  output: "server",
+  // Change from server to static output
+  output: "static",
   adapter: vercel(),
 });
