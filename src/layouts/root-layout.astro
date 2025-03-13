@@ -1,15 +1,24 @@
+---
+import Analytics from "@vercel/analytics/astro";
+{
+  /* ... */
+}
+---
+
 <div
-	id='root-container'
-	class='w-full flex flex-col items-center justify-start my-6 p-4 antialiased max-w-xl mx-auto'>
-	<slot />
+  id="root-container"
+  class="w-full flex flex-col items-center justify-start my-6 p-4 antialiased max-w-xl mx-auto"
+>
+  <slot />
 </div>
 
 <head>
-	<!-- Your existing head content -->
-	<link
-		rel='alternate'
-		type='application/rss+xml'
-		title='RSS Feed for sanju.sh'
-		href='/rss.xml'
-	/>
+  <!-- Your existing head content -->
+  <Analytics />
+  <link
+    rel="alternate"
+    type="application/rss+xml"
+    title="RSS Feed for sanju.sh"
+    href="/rss.xml"
+  />
 </head>
