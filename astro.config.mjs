@@ -3,7 +3,6 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 
-// Change from serverless to static adapter
 import vercel from "@astrojs/vercel/static";
 
 // https://astro.build/config
