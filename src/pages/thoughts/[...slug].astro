@@ -14,6 +14,12 @@ if (!post) return Astro.redirect('/404');
 
 const readingTime = getReadingTime(post.body);
 const { Content } = await post.render();
+// Add this getStaticPaths function
+export async function getStaticPaths() {
+  // Since the "thought" collection doesn't exist or is empty,
+  // we'll return an empty array of paths for now
+  return [];
+}
 ---
 
 <ThoughtsLayout {...post.data} readingTime={readingTime}>
