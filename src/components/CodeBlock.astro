@@ -147,9 +147,12 @@ const { language, title } = Astro.props;
 
     copyButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        const codeBlock = button
-          .closest(".code-container")
-          .querySelector("code");
+        const container = button.closest(".code-container");
+        if (!container) return;
+        
+        const codeBlock = container.querySelector("code");
+        if (!codeBlock) return;
+        
         const code = codeBlock.innerText;
 
         navigator.clipboard.writeText(code).then(() => {

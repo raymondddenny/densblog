@@ -1,10 +1,17 @@
 ---
+// Add an interface for the milestone type
+interface Milestone {
+  year: number;
+  title: string;
+  event: string;
+}
+
 const { milestones } = Astro.props;
 ---
 
-<div class="timeline">
+<div class="timeline-container">
   {
-    milestones.map((milestone) => (
+    milestones.map((milestone: Milestone) => (
       <div class="milestone">
         <div class="year-box">
           <span>{milestone.year}</span>
@@ -16,11 +23,11 @@ const { milestones } = Astro.props;
       </div>
     ))
   }
+</div>
 
-  <!-- Journey continues message -->
-  <div class="journey-continues">
-    <span>Journey still continues but now with God's Grace</span>
-  </div>
+<!-- Journey continues message -->
+<div class="journey-continues">
+  <span>Journey still continues but now with God's Grace</span>
 </div>
 
 <style>
