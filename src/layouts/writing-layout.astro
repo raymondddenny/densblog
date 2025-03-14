@@ -9,6 +9,8 @@ import { clsx } from '@utils/index';
 type Props = CollectionEntry<'writing'>['data'];
 
 const { title, description, pubDate, heroImage, readingTime } = Astro.props;
+// Add this import to your existing imports
+import PrismSetup from '@components/PrismSetup.astro';
 ---
 
 <html lang='en'>
@@ -74,3 +76,6 @@ const { title, description, pubDate, heroImage, readingTime } = Astro.props;
 		</div>
 	</RootLayout>
 </html>
+
+<!-- Add this near the end of your layout, before closing body tag -->
+<PrismSetup />

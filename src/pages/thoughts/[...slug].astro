@@ -1,28 +1,31 @@
 ---
-import ThoughtsLayout from '@layouts/thoughts-layout.astro';
-import { type CollectionEntry, getCollection } from 'astro:content';
-import { ScrollProgress } from '@components/misc';
-import { getReadingTime } from '@utils/index';
+import ThoughtsLayout from "@layouts/thoughts-layout.astro";
+import { type CollectionEntry, getCollection } from "astro:content";
+import { ScrollProgress } from "@components/misc";
+import { getReadingTime } from "@utils/index";
 
-const posts = await getCollection('thought');
-type Props = CollectionEntry<'thought'>;
+const posts = await getCollection("thought");
+type Props = CollectionEntry<"thought">;
 
 const { slug } = Astro.params;
 const post = posts.find((page) => page.slug === slug);
 
-if (!post) return Astro.redirect('/404');
+if (!post) return Astro.redirect("/404");
 
 const readingTime = getReadingTime(post.body);
 const { Content } = await post.render();
-// Add this getStaticPaths function
+
+// Fix the getStaticPaths function to generate routes for all thought posts
 export async function getStaticPaths() {
-  // Since the "thought" collection doesn't exist or is empty,
-  // we'll return an empty array of paths for now
-  return [];
+  const posts = await getCollection("thought");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: post,
+  }));
 }
 ---
 
 <ThoughtsLayout {...post.data} readingTime={readingTime}>
-	<Content />
-	<ScrollProgress />
+  <Content />
+  <ScrollProgress />
 </ThoughtsLayout>

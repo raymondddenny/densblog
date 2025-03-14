@@ -1,0 +1,142 @@
+---
+const { milestones } = Astro.props;
+---
+
+<div class="timeline">
+  {
+    milestones.map((milestone) => (
+      <div class="milestone">
+        <div class="year-box">
+          <span>{milestone.year}</span>
+        </div>
+        <div class="content-card">
+          <h3>{milestone.title}</h3>
+          <p>{milestone.event}</p>
+        </div>
+      </div>
+    ))
+  }
+
+  <!-- Journey continues message -->
+  <div class="journey-continues">
+    <span>Journey still continues but now with God's Grace</span>
+  </div>
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    max-width: 100%;
+    margin: 2rem 0;
+    padding-left: 1rem;
+  }
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    width: 4px;
+    /* Remove this background-color as it's overriding the gradient */
+    /* background-color: var(--theme-accent, #2563eb); */
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 4px;
+    /* Update dashed line to use CSS variables properly */
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--theme-accent, #2563eb) 0,
+      var(--theme-accent, #2563eb) 10px,
+      transparent 10px,
+      transparent 15px
+    );
+  }
+
+  .milestone {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 2.5rem;
+  }
+
+  .milestone:last-child {
+    margin-bottom: 0;
+  }
+
+  .year-box {
+    position: absolute;
+    left: -1.5rem;
+    background-color: var(--theme-card-bg, var(--theme-bg, white));
+    border: 2px solid var(--theme-accent, #2563eb);
+    border-radius: 8px;
+    padding: 0.5rem;
+    color: var(--theme-accent, #2563eb);
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    min-width: 5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+  }
+
+  .content-card {
+    background-color: var(--theme-card-bg, var(--theme-bg, white));
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--theme-accent, #2563eb);
+  }
+
+  .content-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--theme-text-accent, #1e3a8a);
+    font-size: 1.25rem;
+  }
+
+  .content-card p {
+    margin: 0;
+    color: var(--theme-text, #4b5563);
+  }
+
+  /* Alternating styles for even/odd items */
+  .milestone:nth-child(even) .content-card {
+    border-right: 4px solid var(--theme-accent, #2563eb);
+    border-left: none;
+  }
+
+  .milestone:nth-child(odd) {
+    border-left: 4px solid transparent;
+  }
+
+  .milestone:nth-child(even) {
+    border-right: 4px solid transparent;
+  }
+
+  .journey-continues {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    position: relative;
+    color: var(--theme-accent, #2563eb);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .journey-continues::before {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: var(--theme-accent, #2563eb);
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    transform: translateX(-4px);
+  }
+
+  .journey-continues span {
+    background-color: var(--theme-card-bg, var(--theme-bg, white));
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px dashed var(--theme-accent, #2563eb);
+  }
+</style>
