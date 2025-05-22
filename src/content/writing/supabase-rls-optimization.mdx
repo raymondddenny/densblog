@@ -32,7 +32,7 @@ FOR SELECT USING (auth.jwt() -> 'manager_of' ? department_id::text);
 
 ## The Consolidated Policy Approach
 
-Our solution was to consolidate these policies into a single, comprehensive policy per table:
+My solution was to consolidate these policies into a single, comprehensive policy per table:
 
 ```sql
 -- Optimized approach: One comprehensive policy
@@ -79,7 +79,7 @@ function createSupabaseToken(user) {
 }
 ```
 
-**Pro tip:** Always include `aud: "authenticated"` and `role: "authenticated"` in your tokens. Otherwise, your RLS policies might just ignore you.
+**Pro tip:** Always include `aud: "authenticated"` and `role: "authenticated"` in yMy tokens. Otherwise, your RLS policies might just ignore you.
 
 ## Security Deep Dive: Function Search Paths
 
@@ -135,7 +135,7 @@ These duplicates occurred when:
 - Manual indexes were created with different naming conventions
 - Schema migrations were performed without checking existing indexes
 
-Our cleanup script removed these redundancies:
+My cleanup script removed these redundancies:
 
 ```sql
 DO $$
