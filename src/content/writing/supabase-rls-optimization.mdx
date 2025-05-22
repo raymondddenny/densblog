@@ -1,13 +1,9 @@
 ---
 title: "Optimizing Supabase Row Level Security: Lessons from the Trenches"
 description: "How I improved security and performance by refactoring RLS policies, fixing function vulnerabilities, and cleaning up my database."
-heroImage: '/images/supabase-rls.png'
-pubDate: 2025-05-22
-author: "Denny Raymond"
-tags: ["supabase", "security", "database", "optimization", "RLS"]
+heroImage: "/images/supabase-rls.png"
+pubDate: "May 22 2025"
 ---
-
-
 
 ## Introduction
 
@@ -66,17 +62,20 @@ Here’s how I build my Supabase tokens (with a little help from `jwt.sign`):
 
 ```js
 function createSupabaseToken(user) {
-  return jwt.sign({
-    aud: "authenticated",     // Required for RLS policies
-    role: "authenticated",    // Must match policy requirements
-    sub: user.supabase_uuid,  // Must be a valid UUID
-    email: user.email,
-    // Custom claims for additional RLS checks
-    user_metadata: {
-      original_id: user.legacy_id,
-      company_id: user.company_id
-    }
-  }, process.env.JWT_SECRET);
+  return jwt.sign(
+    {
+      aud: "authenticated", // Required for RLS policies
+      role: "authenticated", // Must match policy requirements
+      sub: user.supabase_uuid, // Must be a valid UUID
+      email: user.email,
+      // Custom claims for additional RLS checks
+      user_metadata: {
+        original_id: user.legacy_id,
+        company_id: user.company_id,
+      },
+    },
+    process.env.JWT_SECRET
+  );
 }
 ```
 
@@ -100,7 +99,7 @@ DECLARE
   func_record record;
 BEGIN
   FOR func_record IN
-    SELECT 
+    SELECT
       n.nspname as schema_name,
       p.proname as function_name
     FROM pg_proc p
@@ -160,9 +159,9 @@ async function syncExternalUserWithSupabase(adminSupabase, externalUser) {
   try {
     // First try to find user by email
     const { data: existingUsers } = await adminSupabase
-      .from('users')
-      .select('id')
-      .eq('email', externalUser.email)
+      .from("users")
+      .select("id")
+      .eq("email", externalUser.email)
       .maybeSingle();
 
     let supabaseUuid;
@@ -175,7 +174,7 @@ async function syncExternalUserWithSupabase(adminSupabase, externalUser) {
       const { data, error } = await adminSupabase.auth.admin.createUser({
         email: externalUser.email,
         password: generateSecurePassword(),
-        user_metadata: { original_id: externalUser.id }
+        user_metadata: { original_id: externalUser.id },
       });
 
       if (error) throw error;
@@ -186,9 +185,8 @@ async function syncExternalUserWithSupabase(adminSupabase, externalUser) {
     await updateEmployeeRecord(externalUser.id, supabaseUuid);
 
     return supabaseUuid;
-
   } catch (error) {
-    logger.error('User sync error:', error);
+    logger.error("User sync error:", error);
     throw error;
   }
 }
@@ -215,4 +213,14 @@ The effort invested in RLS optimization pays dividends in reduced technical debt
 
 ---
 
-_Have you tackled RLS optimization in your Supabase projects? Share your experiences in the comments!_
+_Have you tackled RLS optimization in your Supabase projects? You can hit me on my social media to discuss_
+
+**P.S.** follow me on [Twitter](https://x.com/raymonddenny14) & [Threads](https://www.threads.net/@dennyraymond?hl=en) i like to share or reshare info also there.
+
+## wrap it up
+
+That's all for now, see you next time.
+
+---
+
+## Your engineer friend.
