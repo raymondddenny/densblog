@@ -54,7 +54,7 @@ This approach resulted in:
 
 ## JWT Structure: The Key to RLS Success
 
-One of the most interesting challenges I faced was becamee my app serves as a white-label platform. That means other apps (with their own authentication systems!) mee my backend, and I needed to make sure their users could be recognized and authorized by Supabase’s RLS.
+One of the most interesting challenges I faced was that my app serves as a white-label platform. That means other apps (with their own authentication systems!) mee my backend, and I needed to make sure their users could be recognized and authorized by Supabase’s RLS.
 
 This meant I had to bridge the gap between external auth systems and Supabase’s expectations. Supabase RLS is super picky about JWT claims, so I had to make sure every token—no matter where it came from—had the right structure.
 
@@ -79,7 +79,7 @@ function createSupabaseToken(user) {
 }
 ```
 
-**Pro tip:** Always include `aud: "authenticated"` and `role: "authenticated"` in yMy tokens. Otherwise, your RLS policies might just ignore you.
+**Pro tip:** Always include `aud: "authenticated"` and `role: "authenticated"` in your tokens. Otherwise, your RLS policies might just ignore you.
 
 ## Security Deep Dive: Function Search Paths
 
@@ -150,7 +150,7 @@ The results were immediate: faster write operations and reduced database size.
 
 ## Bridging Two Worlds: Authentication Sync
 
-Becamee my app is a white-label platform, I needed to support clients who bring their own authentication systems. The challenge? Making sure users from these external systems could be mapped to Supabase users—so RLS could do its job.
+Because my app is a white-label platform, I needed to support clients who bring their own authentication systems. The challenge? Making sure users from these external systems could be mapped to Supabase users—so RLS could do its job.
 
 I ended up writing a helper that syncs users from any external auth system (not just my legacy one!) into Supabase. This way, every user—no matter where they log in—gets a Supabase UUID and the right metadata. Here’s how I did it:
 
@@ -215,12 +215,12 @@ The effort invested in RLS optimization pays dividends in reduced technical debt
 
 _Have you tackled RLS optimization in your Supabase projects? You can hit me on my social media to discuss_
 
-**P.S.** follow me on [Twitter](https://x.com/raymonddenny14) & [Threads](https://www.threads.net/@dennyraymond?hl=en) i like to share or reshare info also there.
+**P.S.** Follow me on [Twitter](https://x.com/raymonddenny14) & [Threads](https://www.threads.net/@dennyraymond?hl=en). I like to share or reshare info there as well.
 
-## wrap it up
+## Wrap it up
 
-That's all for now, see you next time.
+That's all for now. See you next time!
 
 ---
 
-## Your engineer friend.
+## Your Engineer Friend

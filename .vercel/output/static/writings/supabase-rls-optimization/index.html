@@ -80,7 +80,7 @@
 <li><strong>Easier maintenance</strong> when updating access rules</li>
 </ul>
 <h2 id="jwt-structure-the-key-to-rls-success">JWT Structure: The Key to RLS Success</h2>
-<p>One of the most interesting challenges I faced was becamee my app serves as a white-label platform. That means other apps (with their own authentication systems!) mee my backend, and I needed to make sure their users could be recognized and authorized by Supabase’s RLS.</p>
+<p>One of the most interesting challenges I faced was that my app serves as a white-label platform. That means other apps (with their own authentication systems!) mee my backend, and I needed to make sure their users could be recognized and authorized by Supabase’s RLS.</p>
 <p>This meant I had to bridge the gap between external auth systems and Supabase’s expectations. Supabase RLS is super picky about JWT claims, so I had to make sure every token—no matter where it came from—had the right structure.</p>
 <p>Here’s how I build my Supabase tokens (with a little help from <code>jwt.sign</code>):</p>
 <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="js"><code><span class="line"><span style="color:#F97583">function</span><span style="color:#B392F0"> createSupabaseToken</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">user</span><span style="color:#E1E4E8">) {</span></span>
@@ -100,7 +100,7 @@
 <span class="line"><span style="color:#E1E4E8">  );</span></span>
 <span class="line"><span style="color:#E1E4E8">}</span></span>
 <span class="line"></span></code></pre>
-<p><strong>Pro tip:</strong> Always include <code>aud: &quot;authenticated&quot;</code> and <code>role: &quot;authenticated&quot;</code> in yMy tokens. Otherwise, your RLS policies might just ignore you.</p>
+<p><strong>Pro tip:</strong> Always include <code>aud: &quot;authenticated&quot;</code> and <code>role: &quot;authenticated&quot;</code> in your tokens. Otherwise, your RLS policies might just ignore you.</p>
 <h2 id="security-deep-dive-function-search-paths">Security Deep Dive: Function Search Paths</h2>
 <p>During my security audit, I discovered numerous “Function Search Path Mutable” warnings in Supabase. These seemingly minor warnings actually represent significant security vulnerabilities.</p>
 <h3 id="the-risk">The Risk</h3>
@@ -152,7 +152,7 @@
 <span class="line"></span></code></pre>
 <p>The results were immediate: faster write operations and reduced database size.</p>
 <h2 id="bridging-two-worlds-authentication-sync">Bridging Two Worlds: Authentication Sync</h2>
-<p>Becamee my app is a white-label platform, I needed to support clients who bring their own authentication systems. The challenge? Making sure users from these external systems could be mapped to Supabase users—so RLS could do its job.</p>
+<p>Because my app is a white-label platform, I needed to support clients who bring their own authentication systems. The challenge? Making sure users from these external systems could be mapped to Supabase users—so RLS could do its job.</p>
 <p>I ended up writing a helper that syncs users from any external auth system (not just my legacy one!) into Supabase. This way, every user—no matter where they log in—gets a Supabase UUID and the right metadata. Here’s how I did it:</p>
 <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="js"><code><span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> syncExternalUserWithSupabase</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">adminSupabase</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">externalUser</span><span style="color:#E1E4E8">) {</span></span>
 <span class="line"><span style="color:#F97583">  try</span><span style="color:#E1E4E8"> {</span></span>
@@ -206,11 +206,11 @@
 <p>The effort invested in RLS optimization pays dividends in reduced technical debt, improved scalability, and enhanced security posture. For any team building serious applications on Supabase, I highly recommend making RLS optimization a priority.</p>
 <hr/>
 <p><em>Have you tackled RLS optimization in your Supabase projects? You can hit me on my social media to discuss</em></p>
-<p><strong>P.S.</strong> follow me on <a href="https://x.com/raymonddenny14">Twitter</a> &amp; <a href="https://www.threads.net/@dennyraymond?hl=en">Threads</a> i like to share or reshare info also there.</p>
-<h2 id="wrap-it-up">wrap it up</h2>
-<p>That’s all for now, see you next time.</p>
+<p><strong>P.S.</strong> Follow me on <a href="https://x.com/raymonddenny14">Twitter</a> &amp; <a href="https://www.threads.net/@dennyraymond?hl=en">Threads</a>. I like to share or reshare info there as well.</p>
+<h2 id="wrap-it-up">Wrap it up</h2>
+<p>That’s all for now. See you next time!</p>
 <hr/>
-<h2 id="your-engineer-friend">Your engineer friend.</h2> <div id="progress-container" data-astro-cid-rg2ieard> <svg id="progress-circle" viewBox="0 0 36 36" data-astro-cid-rg2ieard> <path class="circle-bg" d="M18 2.0845
+<h2 id="your-engineer-friend">Your Engineer Friend</h2> <div id="progress-container" data-astro-cid-rg2ieard> <svg id="progress-circle" viewBox="0 0 36 36" data-astro-cid-rg2ieard> <path class="circle-bg" d="M18 2.0845
             a 15.9155 15.9155 0 0 1 0 31.831
             a 15.9155 15.9155 0 0 1 0 -31.831" data-astro-cid-rg2ieard></path> <path id="progress" class="circle" stroke-dasharray="0, 100" d="M18 2.0845
             a 15.9155 15.9155 0 0 1 0 31.831
