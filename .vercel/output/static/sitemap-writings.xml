@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <url>
+        <loc>https://www.denncodes.com/writings</loc>
+        <lastmod>2025-05-22T11:45:33.207Z</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+      </url>
+
+      
+        <url>
+          <loc>https://www.denncodes.com/writings/dens-internet-corner-space</loc>
+          <lastmod>2025-03-12T17:00:00.000Z</lastmod>
+        <changefreq>daily</changefreq>
+          <priority>1.0</priority>
+        </url>
+      
+        <url>
+          <loc>https://www.denncodes.com/writings/supabase-rls-optimization</loc>
+          <lastmod>2025-05-22T00:00:00.000Z</lastmod>
+        <changefreq>daily</changefreq>
+          <priority>1.0</priority>
+        </url>
+      
+    </urlset>
+  

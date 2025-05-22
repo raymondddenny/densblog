@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Add this before other head content --><script>
+  const theme = (() => {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+      return localStorage.getItem("theme") || "light";
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  })();
+
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+</script> <!-- umami analytics{
+  import.meta.env.PROD && (
+    <script
+      async
+      defer
+      data-website-id={import.meta.env.UMAMI_WEBSITE_ID}
+      src={import.meta.env.UMAMI_TRACKING_URL}
+    />
+  )
+} --><!-- clarity analytics --><!-- {
+	import.meta.env.PROD && (
+		<script
+			type='text/javascript'
+			set:html={`
+			(function(c,l,a,r,i,t,y){
+				c[a] = c[a] || function() { (c[a].q=c[a].q||[]).push(arguments) };
+				t=l.createElement(r); t.async=1; t.src="https://www.clarity.ms/tag/" + i;
+				y=l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t,y);
+			})(window, document, "clarity", "script", "${import.meta.env.CLARITY_TRACKING_ID}");
+		`}
+		/>
+	)
+} --><link rel="sitemap" href="/sitemap-index.xml"><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><!-- Favicons --><link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"><meta name="generator" content="Astro v4.15.1"><!-- Canonical URL --><link rel="canonical" href="https://www.denncodes.com/writings/supabase-rls-optimization/"><!-- Primary Meta Tags --><title>Optimizing Supabase Row Level Security: Lessons from the Trenches</title><meta name="title" content="Optimizing Supabase Row Level Security: Lessons from the Trenches"><meta name="description" content="How I improved security and performance by refactoring RLS policies, fixing function vulnerabilities, and cleaning up my database."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.denncodes.com/writings/supabase-rls-optimization/"><meta property="og:title" content="Optimizing Supabase Row Level Security: Lessons from the Trenches"><meta property="og:description" content="How I improved security and performance by refactoring RLS policies, fixing function vulnerabilities, and cleaning up my database."><meta property="og:image" content="https://www.denncodes.com/images/ogimage.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.denncodes.com/writings/supabase-rls-optimization/"><meta property="twitter:title" content="Optimizing Supabase Row Level Security: Lessons from the Trenches"><meta property="twitter:description" content="How I improved security and performance by refactoring RLS policies, fixing function vulnerabilities, and cleaning up my database."><meta property="twitter:image" content="https://www.denncodes.com/images/ogimage.png"><link rel="alternate" type="application/rss+xml" title="Optimizing Supabase Row Level Security: Lessons from the Trenches RSS Feed" href="/rss.xml"><link rel="stylesheet" href="/_astro/index.BNBug4yU.css">
+<link rel="stylesheet" href="/_astro/_slug_.D0piB5ne.css">
+<style>#progress-container[data-astro-cid-rg2ieard]{position:fixed;bottom:20px;right:20px;width:50px;height:50px;cursor:pointer;display:flex;align-items:center;justify-content:center}#progress-circle[data-astro-cid-rg2ieard]{position:absolute;width:100%;height:100%;transform:rotate(-90deg)}.circle-bg[data-astro-cid-rg2ieard]{fill:none;stroke:#eee;stroke-width:3.8}.circle[data-astro-cid-rg2ieard]{fill:none;stroke:#4caf50;stroke-width:2.8;stroke-linecap:round;transition:stroke-dasharray .3s}.lucide-chevron-up[data-astro-cid-rg2ieard]{position:relative;z-index:1}
+</style><script type="module">document.addEventListener("scroll",()=>{const e=document.documentElement.scrollTop,r=document.documentElement.scrollHeight-document.documentElement.clientHeight,n=e/r*100,t=document.getElementById("progress");t&&(t.style.strokeDasharray=`${n}, 100`)});const i=document.getElementById("progress-container");i&&i.addEventListener("click",()=>{window.scrollTo({top:0,behavior:"smooth"})});const l=typeof localStorage<"u"&&localStorage.getItem("theme")?localStorage.getItem("theme")||"light":window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";l==="light"?document.documentElement.classList.remove("dark"):document.documentElement.classList.add("dark");localStorage.setItem("theme",l);const f=()=>{const e=document.documentElement;e.classList.toggle("dark");const r=e.classList.contains("dark");localStorage.setItem("theme",r?"dark":"light")};document.getElementById("theme-toggle")?.addEventListener("click",f);var g="@vercel/analytics",h="1.5.0",w=()=>{window.va||(window.va=function(...r){(window.vaq=window.vaq||[]).push(r)})};function u(){return typeof window<"u"}function m(){try{const e="production"}catch{}return"production"}function v(e="auto"){if(e==="auto"){window.vam=m();return}window.vam=e}function y(){return(u()?window.vam:m())||"production"}function s(){return y()==="development"}function p(e,r){if(!e||!r)return e;let n=e;try{const t=Object.entries(r);for(const[o,a]of t)if(!Array.isArray(a)){const c=d(a);c.test(n)&&(n=n.replace(c,`/[${o}]`))}for(const[o,a]of t)if(Array.isArray(a)){const c=d(a.join("/"));c.test(n)&&(n=n.replace(c,`/[...${o}]`))}return n}catch{return e}}function d(e){return new RegExp(`/${b(e)}(?=[/?#]|$)`)}function b(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function k(e){return e.scriptSrc?e.scriptSrc:s()?"https://va.vercel-scripts.com/v1/script.debug.js":e.basePath?`${e.basePath}/insights/script.js`:"/_vercel/insights/script.js"}function E(e={debug:!0}){var r;if(!u())return;v(e.mode),w(),e.beforeSend&&((r=window.va)==null||r.call(window,"beforeSend",e.beforeSend));const n=k(e);if(document.head.querySelector(`script[src*="${n}"]`))return;const t=document.createElement("script");t.src=n,t.defer=!0,t.dataset.sdkn=g+(e.framework?`/${e.framework}`:""),t.dataset.sdkv=h,e.disableAutoTrack&&(t.dataset.disableAutoTrack="1"),e.endpoint?t.dataset.endpoint=e.endpoint:e.basePath&&(t.dataset.endpoint=`${e.basePath}/insights`),e.dsn&&(t.dataset.dsn=e.dsn),t.onerror=()=>{const o=s()?"Please check if any ad blockers are enabled and try again.":"Be sure to enable Web Analytics for your project and deploy again. See https://vercel.com/docs/analytics/quickstart for more information.";console.log(`[Vercel Web Analytics] Failed to load script from ${n}. ${o}`)},s()&&e.debug===!1&&(t.dataset.debug="false"),document.head.appendChild(t)}function S({route:e,path:r}){var n;(n=window.va)==null||n.call(window,"pageview",{route:e,path:r})}function $(){try{return}catch{}}customElements.define("vercel-analytics",class extends HTMLElement{constructor(){super();try{const r=JSON.parse(this.dataset.props??"{}"),n=JSON.parse(this.dataset.params??"{}");E({...r,disableAutoTrack:!0,framework:"astro",basePath:$(),beforeSend:window.webAnalyticsBeforeSend});const t=this.dataset.pathname;S({route:p(t??"",n),path:t})}catch(r){throw new Error(`Failed to parse WebAnalytics properties: ${r}`)}}});
+</script></head> <div id="root-container" class="w-full flex flex-col items-center justify-start my-6 p-4 antialiased max-w-xl mx-auto">  <div id="navbar+title" class="flex flex-col w-full gap-6 max-w-xl"> <div class="flex flex-row justify-between items-center w-full"> <div class="flex flex-row gap-3 font-medium text-black items-start"> <a href="/" class="hover:text-black dark:hover:text-white hover:font-medium hover:cursor-pointer transition-all duration-100 ease-in-out text-gray-400 dark:text-gray-500 font-medium"> home </a><a href="/writings" class="hover:text-black dark:hover:text-white hover:font-medium hover:cursor-pointer transition-all duration-100 ease-in-out text-black dark:text-white font-medium"> writings </a><a href="/thoughts" class="hover:text-black dark:hover:text-white hover:font-medium hover:cursor-pointer transition-all duration-100 ease-in-out text-gray-400 dark:text-gray-500 font-medium"> thoughts </a><a href="/ships" class="hover:text-black dark:hover:text-white hover:font-medium hover:cursor-pointer transition-all duration-100 ease-in-out text-gray-400 dark:text-gray-500 font-medium"> ships </a> </div> <button id="theme-toggle" class="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200" aria-label="Toggle theme"> <!-- Sun icon --> <svg id="sun-icon" class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path> </svg> <!-- Moon icon --> <svg id="moon-icon" class="w-5 h-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path> </svg> </button>  </div> <article id="blog-content" class="w-full flex flex-col gap-6 items-center justify-center"> <h1 class="w-full text-4xl md:text-5xl lg:text-7xl font-medium tracking-tight"> Optimizing Supabase Row Level Security: Lessons from the Trenches </h1> <div class="flex flex-row gap-2 w-full"> <p class="text-start text-gray-500 font-medium"> <time datetime="2025-05-22T00:00:00.000Z"> May 22, 2025 </time> </p> <span class="text-gray-500 font-medium">·</span> <p class="text-start text-gray-500 font-medium"> 6 min read
+</p> </div> <p class="w-full text-start font-medium text-gray-700 dark:text-gray-300 text-lg"> <span class="font-semibold text-gray-900 dark:text-white">tl;dr:
+</span> How I improved security and performance by refactoring RLS policies, fixing function vulnerabilities, and cleaning up my database. </p> <!-- we're using the Image component from Astro to handle the image optimization -->  <div class="w-full prose prose-lg my-3 prose-p:font-medium dark:prose-invert prose-a:underline prose-a:bg-orange-50 prose-a:decoration-orange-500 items-center justify-center dark:prose-a:bg-orange-950 dark:prose-a:decoration-orange-400 dark:prose-a:underline prose-h1:font-medium prose-h2:font-medium prose-h3:font-medium prose-h4:font-medium prose-h5:font-medium prose-h6:font-medium prose-h1:tracking-tight prose-h2:tracking-tight prose-h3:tracking-tight prose-h4:tracking-tight prose-h5:tracking-tight prose-h6:tracking-tight prose-ul:font-medium prose-ol:font-medium prose-li:font-medium prose-ul:space-y-3 prose-ol:space-y-3 prose-li:space-y-3">  <h2 id="introduction">Introduction</h2>
+<p>In my journey to build a secure, scalable API using Supabase, I encountered several challenges with Row Level Security (RLS) that required thoughtful optimization. This post shares my experience taming complex RLS policies, fixing security vulnerabilities, and boosting database performance. Whether you’re just starting with Supabase or looking to optimize an existing implementation, these insights should help you build more secure and efficient applications.</p>
+<h2 id="the-rls-complexity-problem">The RLS Complexity Problem</h2>
+<p>When I first implemented Row Level Security in my application, I followed a common pattern: creating specific policies for different user roles and operations. Over time, this led to a proliferation of overlapping policies, each granting access in slightly different ways.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#6A737D">-- Initial approach: Multiple specific policies</span></span>
+<span class="line"><span style="color:#F97583">CREATE</span><span style="color:#F97583"> POLICY</span><span style="color:#9ECBFF"> &quot;Employees can view their own data&quot;</span><span style="color:#F97583"> ON</span><span style="color:#E1E4E8"> companies</span></span>
+<span class="line"><span style="color:#F97583">  FOR</span><span style="color:#F97583"> SELECT</span><span style="color:#F97583"> USING</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">auth</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">uid</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> employee_id);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">CREATE</span><span style="color:#F97583"> POLICY</span><span style="color:#9ECBFF"> &quot;Admins can view all data&quot;</span><span style="color:#F97583"> ON</span><span style="color:#E1E4E8"> companies</span></span>
+<span class="line"><span style="color:#F97583">FOR</span><span style="color:#F97583"> SELECT</span><span style="color:#F97583"> USING</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">auth</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">role</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &#39;admin&#39;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">CREATE</span><span style="color:#F97583"> POLICY</span><span style="color:#9ECBFF"> &quot;Managers can view department data&quot;</span><span style="color:#F97583"> ON</span><span style="color:#E1E4E8"> companies</span></span>
+<span class="line"><span style="color:#F97583">FOR</span><span style="color:#F97583"> SELECT</span><span style="color:#F97583"> USING</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">auth</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">jwt</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-&gt;</span><span style="color:#9ECBFF"> &#39;manager_of&#39;</span><span style="color:#E1E4E8"> ? department_id::</span><span style="color:#F97583">text</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span></code></pre>
+<p><strong>The problem?</strong> PostgreSQL evaluates these policies using OR logic – meaning if any policy grants access, the row is accessible. This leads to two significant issues:</p>
+<ol>
+<li><strong>Performance degradation</strong>: Each policy requires evaluation for every row</li>
+<li><strong>Security confusion</strong>: The interaction between multiple policies becomes difficult to reason about</li>
+</ol>
+<h2 id="the-consolidated-policy-approach">The Consolidated Policy Approach</h2>
+<p>Our solution was to consolidate these policies into a single, comprehensive policy per table:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#6A737D">-- Optimized approach: One comprehensive policy</span></span>
+<span class="line"><span style="color:#F97583">CREATE</span><span style="color:#F97583"> POLICY</span><span style="color:#E1E4E8"> all_authenticated_policy </span><span style="color:#F97583">ON</span><span style="color:#E1E4E8"> companies</span></span>
+<span class="line"><span style="color:#F97583">  USING</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#79B8FF">    auth</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">role</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &#39;authenticated&#39;</span><span style="color:#F97583"> AND</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#79B8FF">      auth</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">uid</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> employee_id </span><span style="color:#F97583">OR</span></span>
+<span class="line"><span style="color:#79B8FF">      auth</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">role</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &#39;admin&#39;</span><span style="color:#F97583"> OR</span></span>
+<span class="line"><span style="color:#79B8FF">      auth</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">jwt</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-&gt;</span><span style="color:#9ECBFF"> &#39;manager_of&#39;</span><span style="color:#E1E4E8"> ? department_id::</span><span style="color:#F97583">text</span></span>
+<span class="line"><span style="color:#E1E4E8">    )</span></span>
+<span class="line"><span style="color:#E1E4E8">  );</span></span>
+<span class="line"></span></code></pre>
+<p>This approach resulted in:</p>
+<ul>
+<li><strong>~80% reduction in query time</strong> for tables with complex access patterns</li>
+<li><strong>Simpler security reasoning</strong> with all logic in one place</li>
+<li><strong>Easier maintenance</strong> when updating access rules</li>
+</ul>
+<h2 id="jwt-structure-the-key-to-rls-success">JWT Structure: The Key to RLS Success</h2>
+<p>One of the most interesting challenges I faced was becamee my app serves as a white-label platform. That means other apps (with their own authentication systems!) mee my backend, and I needed to make sure their users could be recognized and authorized by Supabase’s RLS.</p>
+<p>This meant I had to bridge the gap between external auth systems and Supabase’s expectations. Supabase RLS is super picky about JWT claims, so I had to make sure every token—no matter where it came from—had the right structure.</p>
+<p>Here’s how I build my Supabase tokens (with a little help from <code>jwt.sign</code>):</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="js"><code><span class="line"><span style="color:#F97583">function</span><span style="color:#B392F0"> createSupabaseToken</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">user</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> jwt.</span><span style="color:#B392F0">sign</span><span style="color:#E1E4E8">({</span></span>
+<span class="line"><span style="color:#E1E4E8">    aud: </span><span style="color:#9ECBFF">&quot;authenticated&quot;</span><span style="color:#E1E4E8">,     </span><span style="color:#6A737D">// Required for RLS policies</span></span>
+<span class="line"><span style="color:#E1E4E8">    role: </span><span style="color:#9ECBFF">&quot;authenticated&quot;</span><span style="color:#E1E4E8">,    </span><span style="color:#6A737D">// Must match policy requirements</span></span>
+<span class="line"><span style="color:#E1E4E8">    sub: user.supabase_uuid,  </span><span style="color:#6A737D">// Must be a valid UUID</span></span>
+<span class="line"><span style="color:#E1E4E8">    email: user.email,</span></span>
+<span class="line"><span style="color:#6A737D">    // Custom claims for additional RLS checks</span></span>
+<span class="line"><span style="color:#E1E4E8">    user_metadata: {</span></span>
+<span class="line"><span style="color:#E1E4E8">      original_id: user.legacy_id,</span></span>
+<span class="line"><span style="color:#E1E4E8">      company_id: user.company_id</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  }, process.env.</span><span style="color:#79B8FF">JWT_SECRET</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p><strong>Pro tip:</strong> Always include <code>aud: &quot;authenticated&quot;</code> and <code>role: &quot;authenticated&quot;</code> in your tokens. Otherwise, your RLS policies might just ignore you.</p>
+<h2 id="security-deep-dive-function-search-paths">Security Deep Dive: Function Search Paths</h2>
+<p>During my security audit, I discovered numerous “Function Search Path Mutable” warnings in Supabase. These seemingly minor warnings actually represent significant security vulnerabilities.</p>
+<h3 id="the-risk">The Risk</h3>
+<p>When PostgreSQL functions don’t specify a search path, they inherit it from the calling context – potentially allowing SQL injection attacks through path manipulation.</p>
+<h3 id="the-solution">The Solution</h3>
+<p>I created a script to automatically set explicit search paths for all functions:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#E1E4E8">DO $$</span></span>
+<span class="line"><span style="color:#F97583">DECLARE</span></span>
+<span class="line"><span style="color:#E1E4E8">  func_record record;</span></span>
+<span class="line"><span style="color:#F97583">BEGIN</span></span>
+<span class="line"><span style="color:#F97583">  FOR</span><span style="color:#E1E4E8"> func_record </span><span style="color:#F97583">IN</span></span>
+<span class="line"><span style="color:#F97583">    SELECT</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#79B8FF">      n</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">nspname</span><span style="color:#F97583"> as</span><span style="color:#E1E4E8"> schema_name,</span></span>
+<span class="line"><span style="color:#79B8FF">      p</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">proname</span><span style="color:#F97583"> as</span><span style="color:#E1E4E8"> function_name</span></span>
+<span class="line"><span style="color:#F97583">    FROM</span><span style="color:#E1E4E8"> pg_proc p</span></span>
+<span class="line"><span style="color:#F97583">    JOIN</span><span style="color:#E1E4E8"> pg_namespace n </span><span style="color:#F97583">ON</span><span style="color:#79B8FF"> p</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">pronamespace</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> n</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">oid</span></span>
+<span class="line"><span style="color:#F97583">    WHERE</span><span style="color:#79B8FF"> n</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">nspname</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &#39;public&#39;</span></span>
+<span class="line"><span style="color:#F97583">    AND</span><span style="color:#E1E4E8"> pg_get_functiondef(</span><span style="color:#79B8FF">p</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">oid</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">NOT</span><span style="color:#E1E4E8"> ILIKE </span><span style="color:#9ECBFF">&#39;%SET search_path%&#39;</span></span>
+<span class="line"><span style="color:#F97583">  LOOP</span></span>
+<span class="line"><span style="color:#F97583">    EXECUTE</span><span style="color:#79B8FF"> format</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#9ECBFF">      &#39;ALTER FUNCTION %I.%I SET search_path = public, pg_temp&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      func_record</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">schema_name</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      func_record</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">function_name</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#F97583">  END</span><span style="color:#F97583"> LOOP</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">END</span><span style="color:#E1E4E8"> $$;</span></span>
+<span class="line"></span></code></pre>
+<p>This script remediated over 20 potential security vulnerabilities in my database.</p>
+<h2 id="performance-tuning-eliminating-duplicate-indexes">Performance Tuning: Eliminating Duplicate Indexes</h2>
+<p>During my optimization efforts, I discovered several duplicate indexes that were degrading write performance.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#6A737D">-- Example of duplicate indexes I found</span></span>
+<span class="line"><span style="color:#F97583">Table</span><span style="color:#79B8FF"> public</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">employee_schedules</span><span style="color:#E1E4E8"> has identical indexes:</span></span>
+<span class="line"><span style="color:#F97583">  -</span><span style="color:#E1E4E8"> employee_schedules_employee_id_key</span></span>
+<span class="line"><span style="color:#F97583">  -</span><span style="color:#E1E4E8"> uniqueemployeeschedules_employeeid</span></span>
+<span class="line"></span></code></pre>
+<p>These duplicates occurred when:</p>
+<ul>
+<li>Unique constraints were added (creating automatic indexes)</li>
+<li>Manual indexes were created with different naming conventions</li>
+<li>Schema migrations were performed without checking existing indexes</li>
+</ul>
+<p>Our cleanup script removed these redundancies:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#E1E4E8">DO $$</span></span>
+<span class="line"><span style="color:#F97583">BEGIN</span></span>
+<span class="line"><span style="color:#F97583">  DROP</span><span style="color:#F97583"> INDEX</span><span style="color:#F97583"> IF</span><span style="color:#F97583"> EXISTS</span><span style="color:#79B8FF"> public</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">uniqueemployeeschedules_employeeid</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">  DROP</span><span style="color:#F97583"> INDEX</span><span style="color:#F97583"> IF</span><span style="color:#F97583"> EXISTS</span><span style="color:#79B8FF"> public</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">uniqueinbox_employeeid</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#6A737D">  -- Additional indexes...</span></span>
+<span class="line"><span style="color:#F97583">END</span><span style="color:#E1E4E8"> $$;</span></span>
+<span class="line"></span></code></pre>
+<p>The results were immediate: faster write operations and reduced database size.</p>
+<h2 id="bridging-two-worlds-authentication-sync">Bridging Two Worlds: Authentication Sync</h2>
+<p>Becamee my app is a white-label platform, I needed to support clients who bring their own authentication systems. The challenge? Making sure users from these external systems could be mapped to Supabase users—so RLS could do its job.</p>
+<p>I ended up writing a helper that syncs users from any external auth system (not just my legacy one!) into Supabase. This way, every user—no matter where they log in—gets a Supabase UUID and the right metadata. Here’s how I did it:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="js"><code><span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> syncExternalUserWithSupabase</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">adminSupabase</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">externalUser</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">    // First try to find user by email</span></span>
+<span class="line"><span style="color:#F97583">    const</span><span style="color:#E1E4E8"> { </span><span style="color:#FFAB70">data</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">existingUsers</span><span style="color:#E1E4E8"> } </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> adminSupabase</span></span>
+<span class="line"><span style="color:#E1E4E8">      .</span><span style="color:#B392F0">from</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;users&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">      .</span><span style="color:#B392F0">select</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;id&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">      .</span><span style="color:#B392F0">eq</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;email&#39;</span><span style="color:#E1E4E8">, externalUser.email)</span></span>
+<span class="line"><span style="color:#E1E4E8">      .</span><span style="color:#B392F0">maybeSingle</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    let</span><span style="color:#E1E4E8"> supabaseUuid;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (existingUsers) {</span></span>
+<span class="line"><span style="color:#6A737D">      // Use existing user</span></span>
+<span class="line"><span style="color:#E1E4E8">      supabaseUuid </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> existingUsers.id;</span></span>
+<span class="line"><span style="color:#E1E4E8">    } </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">      // Create new user</span></span>
+<span class="line"><span style="color:#F97583">      const</span><span style="color:#E1E4E8"> { </span><span style="color:#79B8FF">data</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">error</span><span style="color:#E1E4E8"> } </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> adminSupabase.auth.admin.</span><span style="color:#B392F0">createUser</span><span style="color:#E1E4E8">({</span></span>
+<span class="line"><span style="color:#E1E4E8">        email: externalUser.email,</span></span>
+<span class="line"><span style="color:#E1E4E8">        password: </span><span style="color:#B392F0">generateSecurePassword</span><span style="color:#E1E4E8">(),</span></span>
+<span class="line"><span style="color:#E1E4E8">        user_metadata: { original_id: externalUser.id }</span></span>
+<span class="line"><span style="color:#E1E4E8">      });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">      if</span><span style="color:#E1E4E8"> (error) </span><span style="color:#F97583">throw</span><span style="color:#E1E4E8"> error;</span></span>
+<span class="line"><span style="color:#E1E4E8">      supabaseUuid </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> data.user.id;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    // Update employee record with Supabase UUID</span></span>
+<span class="line"><span style="color:#F97583">    await</span><span style="color:#B392F0"> updateEmployeeRecord</span><span style="color:#E1E4E8">(externalUser.id, supabaseUuid);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> supabaseUuid;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">  } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (error) {</span></span>
+<span class="line"><span style="color:#E1E4E8">    logger.</span><span style="color:#B392F0">error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;User sync error:&#39;</span><span style="color:#E1E4E8">, error);</span></span>
+<span class="line"><span style="color:#F97583">    throw</span><span style="color:#E1E4E8"> error;</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>This approach keeps everything in sync, so Supabase RLS can recognize users from any connected app. It’s a little extra work, but it makes the platform truly flexible for different clients.</p>
+<h2 id="best-practices-and-lessons-learned">Best Practices and Lessons Learned</h2>
+<p>Based on my experience, here are the key takeaways for effective Supabase RLS implementation:</p>
+<ol>
+<li><strong>Consolidate RLS policies</strong>: One well-structured policy per table is better than multiple overlapping ones</li>
+<li><strong>Structure JWT tokens correctly</strong>: Always include <code>aud</code> and <code>role</code> claims for proper RLS functionality</li>
+<li><strong>Set explicit search paths</strong>: Protect against SQL injection by setting function search paths</li>
+<li><strong>Monitor for duplicate indexes</strong>: Regular database maintenance should include index deduplication</li>
+<li><strong>Automate security checks</strong>: Build scripts to scan for and fix common security issues</li>
+<li><strong>Test RLS thoroughly</strong>: Verify policy behavior with different user roles and edge cases</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>Optimizing Row Level Security in Supabase requires attention to policy structure, JWT configuration, function security, and database performance. By addressing these areas systematically, I significantly improved both security and performance in my application.</p>
+<p>The effort invested in RLS optimization pays dividends in reduced technical debt, improved scalability, and enhanced security posture. For any team building serious applications on Supabase, I highly recommend making RLS optimization a priority.</p>
+<hr/>
+<p><em>Have you tackled RLS optimization in your Supabase projects? Share your experiences in the comments!</em></p> <div id="progress-container" data-astro-cid-rg2ieard> <svg id="progress-circle" viewBox="0 0 36 36" data-astro-cid-rg2ieard> <path class="circle-bg" d="M18 2.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831" data-astro-cid-rg2ieard></path> <path id="progress" class="circle" stroke-dasharray="0, 100" d="M18 2.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831" data-astro-cid-rg2ieard></path> </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up" data-astro-cid-rg2ieard> <path d="m18 15-6-6-6 6" data-astro-cid-rg2ieard></path> </svg> </div>    </div> </article> </div>  </div> <!-- Your existing head content --> <vercel-analytics data-props="{}" data-params="{&#34;slug&#34;:&#34;supabase-rls-optimization&#34;}" data-pathname="/writings/supabase-rls-optimization/"></vercel-analytics>  <link rel="alternate" type="application/rss+xml" title="RSS Feed for sanju.sh" href="/rss.xml">  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-dart.min.js"></script></html><!-- Add this near the end of your layout, before closing body tag -->

@@ -1,22 +1,23 @@
 ---
 title: "Optimizing Supabase Row Level Security: Lessons from the Trenches"
 description: "How I improved security and performance by refactoring RLS policies, fixing function vulnerabilities, and cleaning up my database."
+heroImage: '/images/supabase-rls.png'
 pubDate: 2025-05-22
 author: "Denny Raymond"
 tags: ["supabase", "security", "database", "optimization", "RLS"]
 ---
 
-import { Code } from "nextra/components";
+
 
 ## Introduction
 
-In my journey to build a secure, scalable API meing Supabase, I encountered several challenges with Row Level Security (RLS) that required thoughtful optimization. This post shares my experience taming complex RLS policies, fixing security vulnerabilities, and boosting database performance. Whether you're jmet starting with Supabase or looking to optimize an existing implementation, these insights should help you build more secure and efficient applications.
+In my journey to build a secure, scalable API using Supabase, I encountered several challenges with Row Level Security (RLS) that required thoughtful optimization. This post shares my experience taming complex RLS policies, fixing security vulnerabilities, and boosting database performance. Whether you're just starting with Supabase or looking to optimize an existing implementation, these insights should help you build more secure and efficient applications.
 
 ## The RLS Complexity Problem
 
-When I first implemented Row Level Security in my application, I followed a common pattern: creating specific policies for different meer roles and operations. Over time, this led to a proliferation of overlapping policies, each granting access in slightly different ways.
+When I first implemented Row Level Security in my application, I followed a common pattern: creating specific policies for different user roles and operations. Over time, this led to a proliferation of overlapping policies, each granting access in slightly different ways.
 
-<Code lang="sql">{`
+```sql
 -- Initial approach: Multiple specific policies
 CREATE POLICY "Employees can view their own data" ON companies
   FOR SELECT USING (auth.uid() = employee_id);
@@ -26,18 +27,18 @@ FOR SELECT USING (auth.role() = 'admin');
 
 CREATE POLICY "Managers can view department data" ON companies
 FOR SELECT USING (auth.jwt() -> 'manager_of' ? department_id::text);
-`}</Code>
+```
 
-**The problem?** PostgreSQL evaluates these policies meing OR logic – meaning if any policy grants access, the row is accessible. This leads to two significant issues:
+**The problem?** PostgreSQL evaluates these policies using OR logic – meaning if any policy grants access, the row is accessible. This leads to two significant issues:
 
 1. **Performance degradation**: Each policy requires evaluation for every row
-2. **Security confmeion**: The interaction between multiple policies becomes difficult to reason about
+2. **Security confusion**: The interaction between multiple policies becomes difficult to reason about
 
 ## The Consolidated Policy Approach
 
 Our solution was to consolidate these policies into a single, comprehensive policy per table:
 
-<Code lang="sql">{`
+```sql
 -- Optimized approach: One comprehensive policy
 CREATE POLICY all_authenticated_policy ON companies
   USING (
@@ -47,7 +48,7 @@ CREATE POLICY all_authenticated_policy ON companies
       auth.jwt() -> 'manager_of' ? department_id::text
     )
   );
-`}</Code>
+```
 
 This approach resulted in:
 
@@ -57,13 +58,13 @@ This approach resulted in:
 
 ## JWT Structure: The Key to RLS Success
 
-One of the most interesting challenges I faced was becamee my app serves as a white-label platform. That means other apps (with their own authentication systems!) mee my backend, and I needed to make sure their meers could be recognized and authorized by Supabase’s RLS.
+One of the most interesting challenges I faced was becamee my app serves as a white-label platform. That means other apps (with their own authentication systems!) mee my backend, and I needed to make sure their users could be recognized and authorized by Supabase’s RLS.
 
 This meant I had to bridge the gap between external auth systems and Supabase’s expectations. Supabase RLS is super picky about JWT claims, so I had to make sure every token—no matter where it came from—had the right structure.
 
 Here’s how I build my Supabase tokens (with a little help from `jwt.sign`):
 
-<Code lang="js">{`
+```js
 function createSupabaseToken(user) {
   return jwt.sign({
     aud: "authenticated",     // Required for RLS policies
@@ -77,13 +78,13 @@ function createSupabaseToken(user) {
     }
   }, process.env.JWT_SECRET);
 }
-`}</Code>
+```
 
-**Pro tip:** Always include `aud: "authenticated"` and `role: "authenticated"` in ymy tokens. Otherwise, ymy RLS policies might jmet ignore you.
+**Pro tip:** Always include `aud: "authenticated"` and `role: "authenticated"` in your tokens. Otherwise, your RLS policies might just ignore you.
 
 ## Security Deep Dive: Function Search Paths
 
-During my security audit, I discovered numerome "Function Search Path Mutable" warnings in Supabase. These seemingly minor warnings actually represent significant security vulnerabilities.
+During my security audit, I discovered numerous "Function Search Path Mutable" warnings in Supabase. These seemingly minor warnings actually represent significant security vulnerabilities.
 
 ### The Risk
 
@@ -93,7 +94,7 @@ When PostgreSQL functions don't specify a search path, they inherit it from the 
 
 I created a script to automatically set explicit search paths for all functions:
 
-<Code lang="sql">{`
+```sql
 DO $$
 DECLARE
   func_record record;
@@ -114,7 +115,7 @@ BEGIN
     );
   END LOOP;
 END $$;
-`}</Code>
+```
 
 This script remediated over 20 potential security vulnerabilities in my database.
 
@@ -122,12 +123,12 @@ This script remediated over 20 potential security vulnerabilities in my database
 
 During my optimization efforts, I discovered several duplicate indexes that were degrading write performance.
 
-<Code lang="sql">{`
+```sql
 -- Example of duplicate indexes I found
 Table public.employee_schedules has identical indexes:
   - employee_schedules_employee_id_key
   - uniqueemployeeschedules_employeeid
-`}</Code>
+```
 
 These duplicates occurred when:
 
@@ -137,24 +138,24 @@ These duplicates occurred when:
 
 Our cleanup script removed these redundancies:
 
-<Code lang="sql">{`
+```sql
 DO $$
 BEGIN
   DROP INDEX IF EXISTS public.uniqueemployeeschedules_employeeid;
   DROP INDEX IF EXISTS public.uniqueinbox_employeeid;
   -- Additional indexes...
 END $$;
-`}</Code>
+```
 
 The results were immediate: faster write operations and reduced database size.
 
 ## Bridging Two Worlds: Authentication Sync
 
-Becamee my app is a white-label platform, I needed to support clients who bring their own authentication systems. The challenge? Making sure meers from these external systems could be mapped to Supabase meers—so RLS could do its job.
+Becamee my app is a white-label platform, I needed to support clients who bring their own authentication systems. The challenge? Making sure users from these external systems could be mapped to Supabase users—so RLS could do its job.
 
-I ended up writing a helper that syncs meers from any external auth system (not jmet my legacy one!) into Supabase. This way, every meer—no matter where they log in—gets a Supabase UUID and the right metadata. Here’s how I did it:
+I ended up writing a helper that syncs users from any external auth system (not just my legacy one!) into Supabase. This way, every user—no matter where they log in—gets a Supabase UUID and the right metadata. Here’s how I did it:
 
-<Code lang="js">{`
+```js
 async function syncExternalUserWithSupabase(adminSupabase, externalUser) {
   try {
     // First try to find user by email
@@ -186,14 +187,14 @@ async function syncExternalUserWithSupabase(adminSupabase, externalUser) {
 
     return supabaseUuid;
 
-} catch (error) {
-logger.error('User sync error:', error);
-throw error;
+  } catch (error) {
+    logger.error('User sync error:', error);
+    throw error;
+  }
 }
-}
-`}</Code>
+```
 
-This approach keeps everything in sync, so Supabase RLS can recognize meers from any connected app. It’s a little extra work, but it makes the platform truly flexible for different clients.
+This approach keeps everything in sync, so Supabase RLS can recognize users from any connected app. It’s a little extra work, but it makes the platform truly flexible for different clients.
 
 ## Best Practices and Lessons Learned
 
@@ -204,14 +205,14 @@ Based on my experience, here are the key takeaways for effective Supabase RLS im
 3. **Set explicit search paths**: Protect against SQL injection by setting function search paths
 4. **Monitor for duplicate indexes**: Regular database maintenance should include index deduplication
 5. **Automate security checks**: Build scripts to scan for and fix common security issues
-6. **Test RLS thoroughly**: Verify policy behavior with different meer roles and edge cases
+6. **Test RLS thoroughly**: Verify policy behavior with different user roles and edge cases
 
-## Conclmeion
+## Conclusion
 
 Optimizing Row Level Security in Supabase requires attention to policy structure, JWT configuration, function security, and database performance. By addressing these areas systematically, I significantly improved both security and performance in my application.
 
-The effort invested in RLS optimization pays dividends in reduced technical debt, improved scalability, and enhanced security posture. For any team building seriome applications on Supabase, I highly recommend making RLS optimization a priority.
+The effort invested in RLS optimization pays dividends in reduced technical debt, improved scalability, and enhanced security posture. For any team building serious applications on Supabase, I highly recommend making RLS optimization a priority.
 
 ---
 
-_Have you tackled RLS optimization in ymy Supabase projects? Share ymy experiences in the comments!_
+_Have you tackled RLS optimization in your Supabase projects? Share your experiences in the comments!_
