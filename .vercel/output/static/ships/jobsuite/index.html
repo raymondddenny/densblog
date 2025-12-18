@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Add this before other head content --><script>
+  const theme = (() => {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+      return localStorage.getItem("theme") || "light";
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  })();
+
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+</script> <!-- umami analytics{
+  import.meta.env.PROD && (
+    <script
+      async
+      defer
+      data-website-id={import.meta.env.UMAMI_WEBSITE_ID}
+      src={import.meta.env.UMAMI_TRACKING_URL}
+    />
+  )
+} --><!-- clarity analytics --><!-- {
+	import.meta.env.PROD && (
+		<script
+			type='text/javascript'
+			set:html={`
+			(function(c,l,a,r,i,t,y){
+				c[a] = c[a] || function() { (c[a].q=c[a].q||[]).push(arguments) };
+				t=l.createElement(r); t.async=1; t.src="https://www.clarity.ms/tag/" + i;
+				y=l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t,y);
+			})(window, document, "clarity", "script", "${import.meta.env.CLARITY_TRACKING_ID}");
+		`}
+		/>
+	)
+} --><link rel="sitemap" href="/sitemap-index.xml"><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><!-- Favicons --><link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"><meta name="generator" content="Astro v5.16.6"><!-- Canonical URL --><link rel="canonical" href="https://www.denncodes.com/ships/jobsuite/"><!-- Primary Meta Tags --><title>JobSuite - Job Application Tracker</title><meta name="title" content="JobSuite - Job Application Tracker"><meta name="description" content="A clean, focused job application tracking tool for job seekers and freelancers to stay organized and land their next opportunity."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.denncodes.com/ships/jobsuite/"><meta property="og:title" content="JobSuite - Job Application Tracker"><meta property="og:description" content="A clean, focused job application tracking tool for job seekers and freelancers to stay organized and land their next opportunity."><meta property="og:image" content="https://www.denncodes.com/images/ogimage.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.denncodes.com/ships/jobsuite/"><meta property="twitter:title" content="JobSuite - Job Application Tracker"><meta property="twitter:description" content="A clean, focused job application tracking tool for job seekers and freelancers to stay organized and land their next opportunity."><meta property="twitter:image" content="https://www.denncodes.com/images/ogimage.png"><link rel="alternate" type="application/rss+xml" title="JobSuite - Job Application Tracker RSS Feed" href="/rss.xml"><link rel="stylesheet" href="/_astro/index.WuQa0nXI.css">
+<link rel="stylesheet" href="/_astro/_slug_.GXMgeb8s.css">
+<style>#progress-container[data-astro-cid-rg2ieard]{position:fixed;bottom:20px;right:20px;width:50px;height:50px;cursor:pointer;display:flex;align-items:center;justify-content:center}#progress-circle[data-astro-cid-rg2ieard]{position:absolute;width:100%;height:100%;transform:rotate(-90deg)}.circle-bg[data-astro-cid-rg2ieard]{fill:none;stroke:#eee;stroke-width:3.8}.circle[data-astro-cid-rg2ieard]{fill:none;stroke:#4caf50;stroke-width:2.8;stroke-linecap:round;transition:stroke-dasharray .3s}.lucide-chevron-up[data-astro-cid-rg2ieard]{position:relative;z-index:1}
+</style></head> <div id="root-container" class="w-full flex flex-col items-center justify-start my-6 p-4 antialiased max-w-xl mx-auto">  <div id="navbar+title" class="flex flex-col w-full gap-6 max-w-xl"> <div class="flex flex-row justify-between items-center w-full"> <div class="flex flex-row gap-3 font-medium text-black items-start"> <a href="/" class="hover:text-black dark:hover:text-white hover:font-medium hover:cursor-pointer transition-all duration-100 ease-in-out text-gray-400 dark:text-gray-500 font-medium"> home </a><a href="/writings" class="hover:text-black dark:hover:text-white hover:font-medium hover:cursor-pointer transition-all duration-100 ease-in-out text-gray-400 dark:text-gray-500 font-medium"> writings </a><a href="/thoughts" class="hover:text-black dark:hover:text-white hover:font-medium hover:cursor-pointer transition-all duration-100 ease-in-out text-gray-400 dark:text-gray-500 font-medium"> thoughts </a><a href="/ships" class="hover:text-black dark:hover:text-white hover:font-medium hover:cursor-pointer transition-all duration-100 ease-in-out text-black dark:text-white font-medium"> ships </a> </div> <button id="theme-toggle" class="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200" aria-label="Toggle theme"> <!-- Sun icon --> <svg id="sun-icon" class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path> </svg> <!-- Moon icon --> <svg id="moon-icon" class="w-5 h-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path> </svg> </button> <script type="module">const t=typeof localStorage<"u"&&localStorage.getItem("theme")?localStorage.getItem("theme")||"light":window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";t==="light"?document.documentElement.classList.remove("dark"):document.documentElement.classList.add("dark");localStorage.setItem("theme",t);const o=()=>{const e=document.documentElement;e.classList.toggle("dark");const l=e.classList.contains("dark");localStorage.setItem("theme",l?"dark":"light")};document.getElementById("theme-toggle")?.addEventListener("click",o);</script> </div> <article id="blog-content" class="w-full flex flex-col gap-6 items-center justify-center"> <h1 class="w-full text-4xl md:text-5xl lg:text-7xl font-medium tracking-tight"> JobSuite - Job Application Tracker </h1> <div class="flex flex-row gap-2 w-full"> <p class="text-start text-gray-500 font-medium"> <time datetime="2025-12-17T17:00:00.000Z"> Dec 18, 2025 </time> </p> <span class="text-gray-500 font-medium">·</span> <p class="text-start text-gray-500 font-medium"> 3 min read
+</p> </div> <p class="w-full text-start font-medium text-gray-700 dark:text-gray-300 text-lg"> <span class="font-semibold">tl;dr: </span> A clean, focused job application tracking tool for job seekers and freelancers to stay organized and land their next opportunity. </p> <img src="/images/jobsuite-hero.png" alt="JobSuite - Job Application Tracker" class="w-full rounded-lg shadow-lg my-4"> <div class="w-full prose prose-lg my-3 prose-p:font-medium dark:prose-invert prose-a:underline  items-center justify-center dark:prose-a:bg-lime-950 dark:prose-a:decoration-lime-400 dark:prose-a:underline prose-a:bg-lime-50 prose-a:decoration-lime-500 prose-h1:font-medium prose-h2:font-medium prose-h3:font-medium prose-h4:font-medium prose-h5:font-medium prose-h6:font-medium prose-h1:tracking-tight prose-h2:tracking-tight prose-h3:tracking-tight prose-h4:tracking-tight prose-h5:tracking-tight prose-h6:tracking-tight prose-ul:font-medium prose-ol:font-medium prose-li:font-medium prose-ul:space-y-3 prose-ol:space-y-3 prose-li:space-y-3">  <h2 id="the-problem-i-wanted-to-solve">The Problem I Wanted to Solve</h2>
+<p>Job hunting is stressful enough without the chaos of managing applications across spreadsheets, notes, and random browser tabs. I’ve been there — losing track of which companies I applied to, forgetting to follow up, and scrambling before interviews because I couldn’t find my notes.</p>
+<p>Most tools out there are either too simple (just a list) or way too complicated (enterprise recruitment software). I wanted something in between — <strong>simple structure, real clarity, no distractions</strong>.</p>
+<p>So I built <a href="https://jobsuiteapp.com/">JobSuite</a>.</p>
+<h2 id="what-jobsuite-does">What JobSuite Does</h2>
+<p>JobSuite is a job application tracking tool designed for people who want to stay organized without the overhead. Here’s what it helps with:</p>
+<h3 id="-track-job-applications">📋 Track Job Applications</h3>
+<p>Keep all your applications in one clean dashboard. No more scattered spreadsheets or messy note apps. Just a clear view of where things stand.</p>
+<h3 id="️-smart-cover-letter-generation">✍️ Smart Cover Letter Generation</h3>
+<p>Generate tailored cover letters for each role in seconds using AI. It’s not about replacing your voice — it’s about giving you a solid starting point.</p>
+<h3 id="-interview-preparation">🎯 Interview Preparation</h3>
+<p>Get personalized interview guides for the roles you apply to. Walk into interviews feeling prepared, not panicked.</p>
+<h2 id="who-its-built-for">Who It’s Built For</h2>
+<ul>
+<li><strong>Job seekers</strong> looking for their next role</li>
+<li><strong>Career changers</strong> exploring new opportunities</li>
+<li><strong>Freelancers</strong> managing multiple applications</li>
+<li><strong>Anyone tired of messy spreadsheets</strong></li>
+</ul>
+<p>If you’re managing your own applications or freelance opportunities, this tool is for you.</p>
+<h2 id="the-tech-behind-it">The Tech Behind It</h2>
+<p>Built with a modern stack focused on speed and reliability:</p>
+<ul>
+<li><strong>Supabase</strong> for authentication and database</li>
+<li><strong>Google Sign-In</strong> for seamless onboarding</li>
+<li><strong>OpenRouter</strong> for AI content generation</li>
+<li><strong>Cloudflare</strong> for security and bot protection</li>
+<li><strong>Polar</strong> for payment processing</li>
+<li><strong>Fly.io</strong> for hosting</li>
+</ul>
+<p>Security was a priority — all data is encrypted in transit (HTTPS) and at rest via Supabase.</p>
+<h2 id="the-business-model">The Business Model</h2>
+<p>I kept it simple:</p>
+<ul>
+<li><strong>Free to start</strong> — new users get 10 free credits, no credit card required</li>
+<li><strong>Pay as you go</strong> — when credits run out, purchase more anytime</li>
+<li><strong>No subscriptions</strong> — just buy what you need</li>
+</ul>
+<p>Credits are used for AI features like cover letter generation, interview guides, and professional avatars.</p>
+<h2 id="what-i-learned-building-this">What I Learned Building This</h2>
+<ol>
+<li><strong>Focus beats features</strong> — It’s tempting to add everything, but the best products do a few things really well</li>
+<li><strong>Solve your own problem</strong> — Building something you’d actually use makes every decision clearer</li>
+<li><strong>Ship early</strong> — Getting it in front of real users taught me more than months of planning</li>
+</ol>
+<h2 id="try-it-out">Try It Out</h2>
+<p>If you’re in the middle of a job search or managing freelance opportunities, give <a href="https://jobsuiteapp.com/">JobSuite</a> a try. It’s free to start, and I’d love to hear your feedback.</p>
+<hr/>
+<p><strong>Check it out:</strong> <a href="https://jobsuiteapp.com/">jobsuiteapp.com</a></p> <div id="progress-container" data-astro-cid-rg2ieard> <svg id="progress-circle" viewBox="0 0 36 36" data-astro-cid-rg2ieard> <path class="circle-bg" d="M18 2.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831" data-astro-cid-rg2ieard></path> <path id="progress" class="circle" stroke-dasharray="0, 100" d="M18 2.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831" data-astro-cid-rg2ieard></path> </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up" data-astro-cid-rg2ieard> <path d="m18 15-6-6-6 6" data-astro-cid-rg2ieard></path> </svg> </div>  <script type="module">document.addEventListener("scroll",()=>{const t=document.documentElement.scrollTop,n=document.documentElement.scrollHeight-document.documentElement.clientHeight,c=t/n*100,e=document.getElementById("progress");e&&(e.style.strokeDasharray=`${c}, 100`)});const o=document.getElementById("progress-container");o&&o.addEventListener("click",()=>{window.scrollTo({top:0,behavior:"smooth"})});</script>  </div> </article> </div>  </div> <!-- Your existing head content --> <vercel-analytics data-props="{}" data-params="{&#34;slug&#34;:&#34;jobsuite&#34;}" data-pathname="/ships/jobsuite/"></vercel-analytics> <script type="module">var f="@vercel/analytics",l="1.5.0",w=()=>{window.va||(window.va=function(...r){(window.vaq=window.vaq||[]).push(r)})};function d(){return typeof window<"u"}function u(){try{const e="production"}catch{}return"production"}function v(e="auto"){if(e==="auto"){window.vam=u();return}window.vam=e}function m(){return(d()?window.vam:u())||"production"}function c(){return m()==="development"}function b(e,r){if(!e||!r)return e;let n=e;try{const t=Object.entries(r);for(const[a,i]of t)if(!Array.isArray(i)){const o=s(i);o.test(n)&&(n=n.replace(o,`/[${a}]`))}for(const[a,i]of t)if(Array.isArray(i)){const o=s(i.join("/"));o.test(n)&&(n=n.replace(o,`/[...${a}]`))}return n}catch{return e}}function s(e){return new RegExp(`/${h(e)}(?=[/?#]|$)`)}function h(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function y(e){return e.scriptSrc?e.scriptSrc:c()?"https://va.vercel-scripts.com/v1/script.debug.js":e.basePath?`${e.basePath}/insights/script.js`:"/_vercel/insights/script.js"}function g(e={debug:!0}){var r;if(!d())return;v(e.mode),w(),e.beforeSend&&((r=window.va)==null||r.call(window,"beforeSend",e.beforeSend));const n=y(e);if(document.head.querySelector(`script[src*="${n}"]`))return;const t=document.createElement("script");t.src=n,t.defer=!0,t.dataset.sdkn=f+(e.framework?`/${e.framework}`:""),t.dataset.sdkv=l,e.disableAutoTrack&&(t.dataset.disableAutoTrack="1"),e.endpoint?t.dataset.endpoint=e.endpoint:e.basePath&&(t.dataset.endpoint=`${e.basePath}/insights`),e.dsn&&(t.dataset.dsn=e.dsn),t.onerror=()=>{const a=c()?"Please check if any ad blockers are enabled and try again.":"Be sure to enable Web Analytics for your project and deploy again. See https://vercel.com/docs/analytics/quickstart for more information.";console.log(`[Vercel Web Analytics] Failed to load script from ${n}. ${a}`)},c()&&e.debug===!1&&(t.dataset.debug="false"),document.head.appendChild(t)}function p({route:e,path:r}){var n;(n=window.va)==null||n.call(window,"pageview",{route:e,path:r})}function k(){try{return}catch{}}customElements.define("vercel-analytics",class extends HTMLElement{constructor(){super();try{const r=JSON.parse(this.dataset.props??"{}"),n=JSON.parse(this.dataset.params??"{}");g({...r,disableAutoTrack:!0,framework:"astro",basePath:k(),beforeSend:window.webAnalyticsBeforeSend});const t=this.dataset.pathname;p({route:b(t??"",n),path:t})}catch(r){throw new Error(`Failed to parse WebAnalytics properties: ${r}`)}}});</script> <link rel="alternate" type="application/rss+xml" title="RSS Feed for sanju.sh" href="/rss.xml">  </html>
