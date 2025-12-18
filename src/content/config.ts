@@ -54,6 +54,7 @@ const ship = defineCollection({
     // Transform string to Date object
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
+    heroImage: z.string().optional(),
     readingTime: z.number().optional(),
   }),
 });

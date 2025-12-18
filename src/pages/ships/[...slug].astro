@@ -17,9 +17,11 @@ const readingTime = getReadingTime(post.body);
 
 // Add the getStaticPaths function to generate paths at build time
 export async function getStaticPaths() {
-  // Since the "ship" collection doesn't exist or is empty,
-  // we'll return an empty array of paths for now
-  return [];
+  const ships = await getCollection("ship");
+  return ships.map((ship) => ({
+    params: { slug: ship.slug },
+    props: ship,
+  }));
 }
 ---
 

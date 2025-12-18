@@ -58,6 +58,15 @@ export const products = [
   },
 ];
 
+export const projects = [
+  {
+    name: "JobSuite",
+    description: "Job application tracker for job seekers and freelancers",
+    url: "https://jobsuiteapp.com/",
+    image: "/images/jobsuite-hero.png",
+  },
+];
+
 export const socialLinks = [
   {
     label: "@x",

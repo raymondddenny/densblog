@@ -6,9 +6,9 @@ import { BaseHead } from '@components/seo';
 import RootLayout from '@layouts/root-layout.astro';
 import { clsx } from '@utils/index';
 
-type Props = CollectionEntry<'writing'>['data'];
+type Props = CollectionEntry<'ship'>['data'];
 
-const { title, description, pubDate, readingTime } = Astro.props;
+const { title, description, pubDate, readingTime, heroImage } = Astro.props;
 ---
 
 <html lang='en'>
@@ -47,6 +47,14 @@ const { title, description, pubDate, readingTime } = Astro.props;
 					<span class='font-semibold'>tl;dr: </span>
 					{description}
 				</p>
+
+				{heroImage && (
+					<img
+						src={heroImage}
+						alt={title}
+						class='w-full rounded-lg shadow-lg my-4'
+					/>
+				)}
 
 				<div
 					class={clsx(
